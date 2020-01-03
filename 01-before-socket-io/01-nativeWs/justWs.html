@@ -1,0 +1,24 @@
+<script>
+  let ws = new WebSocket("ws://localhost:8000"); // Create a WebSocket Object
+  console.log(ws); // WebScoket{url:..}
+
+  // As soon as a connection is open we send a message via our WebSocket connection object
+  ws.onopen = event => {
+    ws.send("I am so excited I am connected! It is like Christmas!");
+  };
+
+  // onmessage is an event listener to be called when a message is 'received' from the server.
+  ws.onmessage = event => {
+    console.log(event);
+  };
+</script>
+
+<!-- 
+  'ws://localhost:8000' -> we are using a websocket protocol ie the 'ws' and not 'http' protocol.
+
+  This is us on the client side utilizing the WebSocket API to open a socket to the server.
+
+  On the server side, const wss = new websocket.Server({ server }); will see it.
+
+
+-->
