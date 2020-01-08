@@ -13,7 +13,9 @@ const io = socketio(server);
 io.on("connection", (socket, req) => {
   console.log(
     "Client connect (ie socket.on('connect') triggered me on the server!"
+    // socket
   );
+
   // ws.send (websocket module version) becomes socket.emit
   // Here the server will 'send' a welcome
   socket.emit("welcome", "Welcome to the websocket server!!"); // socket.emit(specify event, data to send back)
