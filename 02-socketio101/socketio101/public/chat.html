@@ -2,9 +2,28 @@
 <script>
   const socket = io("http://localhost:9000");
 
+  console.log(socket.io); // We have our socket object
+  console.log(socket.id); // undefined 1 b/c JS is async and continues execution of this line, 2 the connection is not completed yet at this point.  So to get this you can place inside socket.on('connect')
+
+  // Need to place properties of socket like .id inside of 'connect'
+  socket.on("connect", () => {
+    console.log(socket.id); // Now we get F4ij23cQocfceN2cAAAJ id
+  });
+
   socket.on("messageFromServer", (dataFromServer, ack) => {
     console.log(dataFromServer);
     ack();
     socket.emit("dataToServer", { data: "This is from the client" });
   });
+
+  /* Reference only
+    socket.on("ping", () => {
+      console.log("Ping was received from the server");
+    });
+
+    socket.on("pong", latency => {
+      console.log(latency);
+      console.log("Pong was sent to the server");
+    });
+  */
 </script>
