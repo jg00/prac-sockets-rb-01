@@ -9,6 +9,10 @@ const expressServer = app.listen(9000, () => console.log("Server started!"));
 
 const io = new socketio(expressServer); // io is our server (server.sockets for example our io.sockets)
 
+// Reference for another way to setting up our Socket (ie io) server
+// const io = socketid(); // Gives us a server but we need to attach and hand it our http server
+// io.attach(expressServer)
+
 // Reference for setting defaults.  Also new keyword can be used.
 // const io = socketio(expressServer, {
 //   path: "/socket.io",
@@ -24,7 +28,13 @@ io.on("connection", socket => {
     { data: "Welcome to the socketio server" }, // data sent to client.
     () => console.log("Acknowledged the client got the message!") // cb called by client to acknowledge data received.
   );
+
   socket.on("dataToServer", dataFromClient => {
     console.log(dataFromClient);
+  });
+
+  socket.on("newMessageToServer", msg => {
+    // console.log(msg);
+    io.emit("messageToClients", { text: msg.text });
   });
 });
