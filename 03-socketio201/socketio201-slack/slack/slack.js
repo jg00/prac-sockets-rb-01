@@ -16,7 +16,7 @@ const io = new socketio(expressServer); // Invoke our Socket server object.
 io.on("connection", socket => {
   // console.log("Main namespace", socket);
 
-  // build an array to send back with the img and endpoint for each namespace
+  // Build an array to send back with the img and endpoint for each namespace
   let nsData = namespaces.map(ns => {
     return {
       img: ns.img,
@@ -26,14 +26,19 @@ io.on("connection", socket => {
 
   // console.log("Namespace list", nsData);
 
-  // send the nsData back to the client.  We need to use socket, NOT io, because we want it to go to just this client.
+  // Send the nsData back to the client.  We need to use socket, NOT io, because we want it to go to just this client.
   socket.emit("nsList", nsData);
 });
 
 // Loop through each "individual" namespaces and listen for a connection to the endpoint
 namespaces.forEach(namespace => {
-  console.log("Individual namespace", namespace);
-  io.of(namespace.endpoint).on("connection", socket => {
-    console.log(`${socket.id} has joined ${namespace.endpoint}`);
+  // console.log("Individual namespace", namespace);
+  io.of(namespace.endpoint).on("connection", nsSocket => {
+    console.log(`${nsSocket.id} has joined ${namespace.endpoint}`);
+    // A socket has connected to one of our chat group namespaces
+    // Send that namespace group info back
+
+    // console.log(namespace.rooms);
+    nsSocket.emit("nsRoomLoad", namespaces[0].rooms);
   });
 });
