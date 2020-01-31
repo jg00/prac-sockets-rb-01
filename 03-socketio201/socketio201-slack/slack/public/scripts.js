@@ -1,10 +1,5 @@
 const socket = io("http://localhost:9000"); // Connect to / ie "main" namespace/endpoint
 
-console.log(socket.io);
-socket.on("connect", () => {
-  console.log(socket.id);
-});
-
 // listen for nsList which is a list of all the namespaces.
 socket.on("nsList", nsData => {
   console.log("The list of namespaces has arrived");
@@ -33,44 +28,5 @@ socket.on("nsList", nsData => {
     });
   });
 
-  // Connect to default namespace and once we make a connection load the rooms for the namespace
-  const nsSocket = io("http://localhost:9000/wiki");
-  nsSocket.on("nsRoomLoad", nsRooms => {
-    console.log("nsRooms List", nsRooms);
-
-    // Take the room list and update the DOM
-    let roomList = document.querySelector(".room-list");
-    roomList.innerHTML = "";
-    nsRooms.forEach(room => {
-      let glyph = room.privateRoom ? "lock" : "globe";
-      roomList.innerHTML += `<li class="room"><span class="glyphicon glyphicon-${glyph}"></span>${room.roomTitle}</li>`;
-    });
-
-    // Add a click listener to each room
-    Array.from(document.getElementsByClassName("room")).forEach(elem => {
-      elem.addEventListener("click", e => {
-        console.log("Someone clicked on", e.target.innerText);
-        // console.dir(e.target.innerText);
-      });
-    });
-
-    // LAST STEP WAS ABOVE
-  });
-});
-
-socket.on("messageFromServer", (dataFromServer, ack) => {
-  console.log(dataFromServer);
-  // ack();
-  socket.emit("dataToServer", { data: "Data from the client" });
-});
-
-document.querySelector("#message-form").addEventListener("submit", event => {
-  event.preventDefault();
-  const newMessage = document.querySelector("#user-message").value;
-  socket.emit("newMessageToServer", { text: newMessage });
-});
-
-socket.on("messageToClients", msg => {
-  console.log(msg);
-  document.querySelector("#messages").innerHTML += `<li>${msg.text}</li>`;
+  joinNs("/wiki");
 });
